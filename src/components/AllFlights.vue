@@ -1,28 +1,28 @@
 <template>
   <button @click="toggleVisibility">Show all routes</button>
-  <div v-if= "visibility">
-  <h1>All available routes</h1>
-<table id="priceTable">
-  <thead>
-  <tr>
-    <th>Route</th>
-    <th>Distance (km)</th>
-    <th>Provider</th>
-    <th>Price</th>
-    <th>Flight Start</th>
-    <th>Flight End</th>
-  </tr>
-  </thead>
-  <tbody>
-  <!-- Dynamic rows will be inserted here -->
-  </tbody>
-</table>
-</div>
+  <div v-if="visibility">
+    <h1>All available routes</h1>
+    <table id="priceTable" class="responsive-table">
+      <thead>
+      <tr>
+        <th>Route</th>
+        <th>Distance (km)</th>
+        <th>Provider</th>
+        <th>Price</th>
+        <th>Flight Start</th>
+        <th>Flight End</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Dynamic rows will be inserted here -->
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script>
 import {ref} from "vue";
-import { travelService } from '@/services/api';
+import {travelService} from '@/services/api';
 
 export default {
   setup() {
@@ -44,6 +44,7 @@ export default {
         console.error('Error fetching data:', error);
       }
     }
+
 //Populate table with data
     function populateTable(legs) {
       const tableBody = document.getElementById('priceTable').querySelector('tbody');
@@ -51,38 +52,22 @@ export default {
         leg.providers.forEach(provider => {
           const row = document.createElement('tr');
           row.innerHTML = `
-            <td>${leg.routeInfo.from.name} → ${leg.routeInfo.to.name}</td>
-            <td>${leg.routeInfo.distance.toLocaleString()}</td>
-            <td>${provider.company.name}</td>
-            <td>${provider.price.toFixed(2)}</td>
-            <td>${new Date(provider.flightStart).toLocaleString()}</td>
-            <td>${new Date(provider.flightEnd).toLocaleString()}</td>
+            <td data-label="Route">${leg.routeInfo.from.name} → ${leg.routeInfo.to.name}</td>
+            <td data-label="Distance">${leg.routeInfo.distance.toLocaleString()}</td>
+            <td data-label="Company">${provider.company.name}</td>
+            <td data-label="Price">${provider.price.toFixed(2)}</td>
+            <td data-label="FightStart">${new Date(provider.flightStart).toLocaleString()}</td>
+            <td data-label="FlightEnd">${new Date(provider.flightEnd).toLocaleString()}</td>
           `;
           tableBody.appendChild(row);
         });
       });
     }
 
-    return{visibility, toggleVisibility};
-    },
+    return {visibility, toggleVisibility};
+  },
 };
 </script>
-
 <style scoped>
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 20px 0;
-}
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-th {
-  background-color: #f4f4f4;
-  text-align: left;
-}
-tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
+
 </style>
