@@ -7,25 +7,20 @@
           <h1>COSMOS ODYSSEY</h1>
           <h2>Solar System Travel Deals</h2>
         </div>
-        <div>
-          <SpaceTravel/>
+        <div class="nav-links">
+          <router-link to="/" class="router-link">Search flights</router-link>
+          <router-link to="/reservations" class="router-link">My Reservations</router-link>
         </div>
+        <router-view></router-view>
+
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import SpaceTravel from "@/views/SpaceTravel.vue";
 
 
-export default {
-
-  components: {
-    SpaceTravel
-  },
-  methods: {}
-};
 </script>
 
 <style>
@@ -104,5 +99,25 @@ input {
   min-height: 100vh;
   overflow-y: auto;
   padding: 2rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.router-link {
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: white;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.router-link:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 </style>
