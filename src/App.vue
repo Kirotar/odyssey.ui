@@ -36,10 +36,10 @@
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border-radius: 20px;
-  width: 80%;
+  width: 90%;
   max-width: 1200px;
-  margin: 2rem auto;
-  padding: 2rem;
+  margin: 1rem auto;
+  padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
   min-height: auto;
@@ -47,6 +47,21 @@
   height: fit-content;
 }
 
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0.5rem auto;
+  }
+
+  .wrapper {
+    padding: 1rem;
+  }
+
+  .header-container {
+    padding: 1rem;
+  }
+}
 .header-container {
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);

@@ -9,43 +9,49 @@
       <p>Distance: {{ routeData.distance }} km</p>
     </div>
     <div v-if="!showConfirmation">
-
-    <form class="space-y-4">
-      <input type="hidden" v-model="newReservation.routeId">
-      <input type="hidden" v-model="newReservation.providerId">
-      <div>
-        <input
-            type="text"
-            v-model="newReservation.firstName"
-            placeholder="First name"
-            class="form-control"
-            required
-        />
-      </div>
-      <div>
-        <input
-            type="text"
-            v-model="newReservation.lastName"
-            placeholder="Last name"
-            class="form-control"
-            required
-        />
-      </div>
-      <button @click="showConfirmDialog" type="submit">Confirm reservation</button>
-    </form>
-  </div>
-
-
-  <!-- Confirmation dialog -->
-  <div v-if="showConfirmation" class="confirmation-dialog">
-    <h3>Confirm Your Reservation</h3>
-    <p>Please review your reservation details:</p>
-    <!-- Show reservation details -->
-    <div class="actions">
-      <button @click="confirmReservation(newReservation)">Confirm</button>
-      <button @click="showConfirmation = false">Cancel</button>
+      <form @submit.prevent="validateAndShowConfirm" class="space-y-4">
+        <input type="hidden" v-model="newReservation.routeId">
+        <input type="hidden" v-model="newReservation.providerId">
+        <div>
+          <input
+              type="text"
+              v-model.trim="newReservation.firstName"
+              placeholder="First name"
+              class="form-control"
+              required
+              :class="{ 'error': formSubmitted && !newReservation.firstName }"
+          />
+          <span v-if="formSubmitted && !newReservation.firstName" class="error-message">
+            First name is required
+          </span>
+        </div>
+        <div>
+          <input
+              type="text"
+              v-model.trim="newReservation.lastName"
+              placeholder="Last name"
+              class="form-control"
+              required
+              :class="{ 'error': formSubmitted && !newReservation.lastName }"
+          />
+          <span v-if="formSubmitted && !newReservation.lastName" class="error-message">
+            Last name is required
+          </span>
+        </div>
+        <button type="submit">Confirm reservation</button>
+      </form>
     </div>
-  </div>
+
+    <!-- Confirmation dialog -->
+    <div v-if="showConfirmation" class="confirmation-dialog">
+      <h3>Confirm Your Reservation</h3>
+      <p>Please review your reservation details:</p>
+      <!-- Show reservation details -->
+      <div class="actions">
+        <button @click="confirmReservation(newReservation)">Confirm</button>
+        <button @click="showConfirmation = false">Cancel</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -69,7 +75,8 @@ export default {
         providerId: this.routeData.provider.id.toString(),
         routeId: this.routeData.routeInfo.id.toString()
       },
-      showConfirmation: false
+      showConfirmation: false,
+      formSubmitted: false
     }
   },
   methods: {
@@ -86,9 +93,17 @@ export default {
       return new Intl.NumberFormat('de-DE', {style: 'currency', currency: 'EUR'}).format(price)
     },
 
-    async confirmReservation(newReservation) {
-      console.log('Form data:', newReservation);
+    validateAndShowConfirm() {
+      this.formSubmitted = true;
 
+      if (!this.newReservation.firstName || !this.newReservation.lastName) {
+        return; // Stop if validation fails
+      }
+
+      this.showConfirmation = true;
+    },
+
+    async confirmReservation(newReservation) {
       try {
         const payload = {
           firstName: newReservation.firstName.trim(),
@@ -103,21 +118,7 @@ export default {
       } catch (error) {
         console.error('Error making reservation:', error.response?.data || error.message);
       }
-    },
-
-   /* resetForm() {
-      this.newReservation = {
-        firstName: "",
-        lastName: "",
-        providerId: this.routeData.provider.id.toString(),
-        routeId: this.routeData.routeInfo.id.toString()
-      }
-    },*/
-
-    showConfirmDialog() {
-      this.showConfirmation = true;
-    },
-
+    }
   },
   created() {
     console.log('Route data:', this.routeData);
@@ -127,8 +128,6 @@ export default {
       providerId: this.routeData.provider.id,
       routeId: this.routeData.routeInfo.id
     };
-    /*  this.newReservation.routeId = this.routeData.routeInfo.id.toString();
-      this.newReservation.providerId = this.routeData.provider.id.toString();*/
   }
 }
 </script>
@@ -166,6 +165,16 @@ input {
   padding: 0.75rem;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+input.error {
+  border-color: #ff4444;
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 }
 
 button[type="submit"] {

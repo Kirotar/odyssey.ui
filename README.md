@@ -1,6 +1,7 @@
 # odyssey.ui
 
 ## Project setup
+
 ```
 npm install
 ```
